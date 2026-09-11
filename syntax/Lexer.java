@@ -137,7 +137,6 @@ public class Lexer {
             }
         } else if (Objects.equals(peek(), "`")) {
             advance();
-            String test = peek();
             while (!Objects.equals(peek(), "`")) {
                 advance();
             }
