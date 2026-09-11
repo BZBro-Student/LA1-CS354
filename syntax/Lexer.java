@@ -15,6 +15,7 @@ public class Lexer {
     private Set<String> keywords = new HashSet<>();
     private Set<String> numbers = new HashSet<>();
     private Set<String> operators = new HashSet<>();
+    private Set<String> comments = new HashSet<>();
 
     /**
      * Creates a new lexical analyzer
@@ -28,10 +29,17 @@ public class Lexer {
         initLetters(letters);
         initKeywords(keywords);
         initNumbers(numbers);
+        initOperators(operators);
+        initComments(comments);
     }
 
     private void initKeywords(Set<String> keywords2) {
         // .... no keywords yet
+    }
+
+    private void initComments(Set<String> c) {
+        c.add("#"); // inline
+        c.add("*"); // multiline
     }
 
     private void initNumbers(Set<String> n) {
@@ -79,17 +87,21 @@ public class Lexer {
         }
     }
 
-    private Token nextKwID() {
+    private Token nextKwOp() {
+        int old = this.position;
 
+        advance();
+        String lexeme = program.substring(old, position);
+        return new Token(lexeme, lexeme);
+    }
+
+    private Token nextKwID() {
         int old = this.position;
         advance();
-
-        while (hasChar() && !whitespace.contains(peek())) {
+        while (hasChar() && letters.contains(peek())) {
             advance();
         }
-
         String lexeme = program.substring(old, position);
-
         if (keywords.contains(lexeme))
             return new Token(lexeme, lexeme);
         else
@@ -100,22 +112,38 @@ public class Lexer {
         int decimalCount = 0;
         int old = this.position;
         advance();
-
         while (hasChar() && numbers.contains(peek())) {
-            advance();
             if (Objects.equals(peek(), ".")) {
-                decimalCount++;
+                decimalCount += 1;
             }
             // return early if a second decimal is found as #.#.# is not valid
             // and is instead treated as 2 numbers next to eachother
-            if (decimalCount > 1) {
+            if (decimalCount == 2) {
                 String lexeme = program.substring(old, position);
                 return new Token("num", lexeme);
             }
+            advance();
         }
-            String lexeme = program.substring(old, position);
-            return new Token("num", lexeme);
+        String lexeme = program.substring(old, position);
+        return new Token("num", lexeme);
 
+    }
+
+    private Token commentParse() {
+        if (Objects.equals(peek(), "#")) {
+            advance();
+            while (!Objects.equals(peek(), "#") && !Objects.equals(peek(), "\n")) {
+                advance(); 
+            }
+        } else if (Objects.equals(peek(), "*")) {
+            advance();
+            String test = peek();
+            while (!Objects.equals(peek(), "*")) {
+                advance();
+            }
+        }
+        advance();
+        return next();
     }
 
     /**
@@ -132,13 +160,15 @@ public class Lexer {
         // logic for when a new token or the EOF is found
         if (!hasChar()) {
             return new Token("EOF");
+        } else if (hasChar() && comments.contains(peek())) {
+            return commentParse();
         } else if (hasChar() && letters.contains(peek())) {
             return nextKwID();
         } else if (hasChar() && numbers.contains(peek())) {
             return nextKwNum();
-        }
-        // rest here!
-        else {
+        } else if (hasChar() && operators.contains(peek())) {
+            return nextKwOp();
+        } else {
             System.err.println("illegal character at position " + position);
             position++;
             return next();
