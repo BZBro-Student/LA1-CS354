@@ -180,14 +180,14 @@ public class LexerTest {
     
     @Test
     public void testBlockCommentOneLine() throws SyntaxException {
-        String prg = "*hello*";
+        String prg = "`hello`";
         Lexer lexer = new Lexer(prg);
         assertEquals(new Token("EOF", "EOF"), lexer.next());
     }
     
     @Test
     public void testBlockCommentTwoLine() throws SyntaxException {
-        String prg = "*hello\nworld\nthe\nworld\nsays\nhello*";
+        String prg = "`hello\nworld\nthe\nworld\nsays\nhello`";
         Lexer lexer = new Lexer(prg);
         assertEquals(new Token("EOF", "EOF"), lexer.next());
     }

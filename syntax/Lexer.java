@@ -39,7 +39,7 @@ public class Lexer {
 
     private void initComments(Set<String> c) {
         c.add("#"); // inline
-        c.add("*"); // multiline
+        c.add("`"); // multiline
     }
 
     private void initNumbers(Set<String> n) {
@@ -135,10 +135,10 @@ public class Lexer {
             while (!Objects.equals(peek(), "#") && !Objects.equals(peek(), "\n")) {
                 advance(); 
             }
-        } else if (Objects.equals(peek(), "*")) {
+        } else if (Objects.equals(peek(), "`")) {
             advance();
             String test = peek();
-            while (!Objects.equals(peek(), "*")) {
+            while (!Objects.equals(peek(), "`")) {
                 advance();
             }
         }
