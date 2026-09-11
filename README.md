@@ -20,6 +20,7 @@ and when I would have to individually add values. The pre-stamped code was easy 
 my work to and the given jUnit tests were great templates for working on making a black box test before 
 actually starting work on the project (and adding to it during development as things changed). Overall
 a very digestible project.
+
 Issues did occur however when implementing the nextKw___() functions for example with the num tokenizer
 my logic for checking to make sure two decimals did not occur in the same token would not execute. I had
 to spend a bunch of time using the break point function in OSScode before realizing the issue was that my advance()
