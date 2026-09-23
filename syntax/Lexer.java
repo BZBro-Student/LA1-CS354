@@ -98,7 +98,7 @@ public class Lexer {
     private Token nextKwID() {
         int old = this.position;
         advance();
-        while (hasChar() && letters.contains(peek())) {
+        while (hasChar() && (letters.contains(peek()) || numbers.contains(peek()))) {
             advance();
         }
         String lexeme = program.substring(old, position);
@@ -129,7 +129,7 @@ public class Lexer {
 
     }
 
-    private Token commentParse() {
+    private Token commentSkip() {
         if (Objects.equals(peek(), "#")) {
             advance();
             while (!Objects.equals(peek(), "#") && !Objects.equals(peek(), "\n")) {
@@ -160,7 +160,7 @@ public class Lexer {
         if (!hasChar()) {
             return new Token("EOF");
         } else if (hasChar() && comments.contains(peek())) {
-            return commentParse();
+            return commentSkip();
         } else if (hasChar() && letters.contains(peek())) {
             return nextKwID();
         } else if (hasChar() && numbers.contains(peek())) {

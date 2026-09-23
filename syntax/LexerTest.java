@@ -115,6 +115,13 @@ public class LexerTest {
         assertEquals(new Token("EOF", "EOF"), lexer.next());
     }
 
+    @Test 
+    public void testIDWithNum() throws SyntaxException {
+        String prg = "a1bcd";
+        Lexer lexer = new Lexer(prg);
+        assertEquals(new Token("id", "a1bcd"), lexer.next());
+    }
+
     /**
      * Tests that the lexer can recognize an operator (the semicolon)
      * 
@@ -198,6 +205,7 @@ public class LexerTest {
         Lexer lexer = new Lexer(prg);
         assertEquals(new Token("id", "abcd"), lexer.next());
     }
+
 
 
 
